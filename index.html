@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Log App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Auth Container -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fas fa-book-open book-logo"></i>
+                <h1 id="auth-title">Welcome Back!</h1>
+                <p id="auth-subtitle">Sign in to access your reading journey</p>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <div class="input-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" name="username" required>
+                    <span class="error-message" id="login-username-error"></span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" required>
+                    <span class="error-message" id="login-password-error"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loading hidden">
+                        <i class="fas fa-spinner fa-spin"></i> Loading...
+                    </span>
+                </button>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form hidden">
+                <div class="input-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" name="username" required>
+                    <span class="error-message" id="register-username-error"></span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" name="email" required>
+                    <span class="error-message" id="register-email-error"></span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" name="password" required>
+                    <span class="error-message" id="register-password-error"></span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <input type="password" id="register-confirm-password" name="confirmPassword" required>
+                    <span class="error-message" id="register-confirm-password-error"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span class="btn-text">Create Account</span>
+                    <span class="btn-loading hidden">
+                        <i class="fas fa-spinner fa-spin"></i> Loading...
+                    </span>
+                </button>
+            </form>
+            
+            <div class="auth-toggle">
+                <button id="toggle-auth" class="toggle-btn">
+                    Don't have an account? Sign up
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="app-container hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo" onclick="setActiveTab('dashboard')">
+                        <i class="fas fa-book-open"></i>
+                        <span>ReadTrack</span>
+                    </div>
+                    
+                    <!-- Desktop Navigation -->
+                    <nav class="nav-desktop">
+                        <button onclick="setActiveTab('dashboard')" class="nav-btn" data-tab="dashboard">Dashboard</button>
+                        <button onclick="setActiveTab('books')" class="nav-btn" data-tab="books">My Books</button>
+                        <button onclick="setActiveTab('add')" class="nav-btn" data-tab="add">Add Book</button>
+                    </nav>
+                    
+                    <div class="header-actions">
+                        <div id="search-container" class="search-container hidden">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="search-input" placeholder="Search books..." class="search-input">
+                        </div>
+                        
+                        <div class="user-menu">
+                            <span id="username-display" class="username"></span>
+                            <button onclick="logout()" class="logout-btn" title="Logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="mobile-menu hidden">
+                    <button onclick="setActiveTab('dashboard')" class="mobile-nav-btn" data-tab="dashboard">Dashboard</button>
+                    <button onclick="setActiveTab('books')" class="mobile-nav-btn" data-tab="books">My Books</button>
+                    <button onclick="setActiveTab('add')" class="mobile-nav-btn" data-tab="add">Add Book</button>
+                    
+                    <div id="mobile-search" class="mobile-search hidden">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="mobile-search-input" placeholder="Search books..." class="search-input">
+                    </div>
+                    
+                    <div class="mobile-user">
+                        <span id="mobile-username" class="username"></span>
+                        <button onclick="logout()" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Dashboard Tab -->
+                <div id="dashboard-tab" class="tab-content">
+                    <div class="dashboard-header">
+                        <h1>My Reading Dashboard</h1>
+                        <button onclick="setActiveTab('add')" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i>
+                            Add New Book
+                        </button>
+                    </div>
+                    
+                    <div id="book-stats" class="book-stats">
+                        <!-- Stats will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <div class="reading-progress">
+                            <h2>Currently Reading</h2>
+                            <div id="reading-books" class="reading-books">
+                                <!-- Currently reading books will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="recent-books">
+                            <div class="recent-header">
+                                <h2>Recently Added</h2>
+                                <button onclick="setActiveTab('books')" class="btn btn-ghost btn-sm">
+                                    View All
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div id="recent-books-list" class="recent-books-list">
+                                <!-- Recent books will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Books Tab -->
+                <div id="books-tab" class="tab-content hidden">
+                    <div class="books-header">
+                        <h1>My Books</h1>
+                        <div class="books-controls">
+                            <select id="filter-status" class="filter-select">
+                                <option value="all">All Books</option>
+                                <option value="Reading">Reading</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Abandoned">Abandoned</option>
+                                <option value="To Read">To Read</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="books-grid" class="books-grid">
+                        <!-- Books will be populated here -->
+                    </div>
+                    
+                    <div id="no-books" class="no-books hidden">
+                        <i class="fas fa-book-open"></i>
+                        <h3>No books found</h3>
+                        <p>Start by adding your first book to your reading list.</p>
+                    </div>
+                </div>
+
+                <!-- Add Book Tab -->
+                <div id="add-tab" class="tab-content hidden">
+                    <div class="add-book-header">
+                        <h1>Add New Book</h1>
+                    </div>
+                    
+                    <form id="book-form" class="book-form">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="book-title">Book Title</label>
+                                <input type="text" id="book-title" name="title" required>
+                                <span class="error-message" id="book-title-error"></span>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="book-author">Author</label>
+                                <input type="text" id="book-author" name="author" required>
+                                <span class="error-message" id="book-author-error"></span>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="book-total-pages">Total Pages</label>
+                                <input type="number" id="book-total-pages" name="totalPages" min="1" required>
+                                <span class="error-message" id="book-total-pages-error"></span>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="book-pages-read">Pages Read</label>
+                                <input type="number" id="book-pages-read" name="pagesRead" min="0" value="0">
+                                <span class="error-message" id="book-pages-read-error"></span>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="book-status">Reading Status</label>
+                                <select id="book-status" name="status">
+                                    <option value="To Read">To Read</option>
+                                    <option value="Reading">Currently Reading</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Abandoned">Abandoned</option>
+                                </select>
+                            </div>
+                            
+                            <div class="input-group full-width">
+                                <label for="book-notes">Notes (Optional)</label>
+                                <textarea id="book-notes" name="notes" rows="3" placeholder="Add your thoughts, quotes, or notes about this book..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Add Book</span>
+                            <span class="btn-loading hidden">
+                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-left">
+                        <span>&copy; 2024 ReadTrack</span>
+                    </div>
+                    <div class="footer-right">
+                        <span>Made with</span>
+                        <i class="fas fa-heart"></i>
+                        <span>for book lovers everywhere</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Edit Book Modal -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Book</h2>
+                <button onclick="closeEditModal()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="edit-book-form" class="edit-form">
+                <input type="hidden" id="edit-book-id">
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="edit-pages-read">Pages Read</label>
+                        <input type="number" id="edit-pages-read" name="pagesRead" min="0">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="edit-status">Status</label>
+                        <select id="edit-status" name="status">
+                            <option value="Reading">Reading</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Abandoned">Abandoned</option>
+                            <option value="To Read">To Read</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" onclick="closeEditModal()" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
